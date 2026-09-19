@@ -17,6 +17,7 @@ import { ENV } from "./_core/env";
 import { calculateExpectedCash } from "./domain";
 
 let _db: ReturnType<typeof drizzle> | null = null;
+const salesDayExpression = sql<string>`DATE_FORMAT(sales.createdAt, '%Y-%m-%d')`;
 
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
@@ -132,7 +133,7 @@ export async function getDashboardData() {
     db.select({ total: sql<number>`COALESCE(SUM(${sales.totalCents}), 0)` }).from(sales).where(and(eq(sales.companyId, 1), eq(sales.status, "completed"), gte(sales.createdAt, monthStart))),
     db.select({ total: sql<number>`COUNT(*)` }).from(products).where(and(eq(products.companyId, 1), eq(products.active, true), sql`${products.stockQuantity} <= ${products.minimumStock}`)),
     db.select({ total: sql<number>`COALESCE(SUM(${customers.debtCents}), 0)` }).from(customers).where(eq(customers.companyId, 1)),
-    db.select({ date: sql<string>`DATE_FORMAT(${sales.createdAt}, '%Y-%m-%d')`, total: sql<number>`COALESCE(SUM(${sales.totalCents}), 0)` }).from(sales).where(and(eq(sales.companyId, 1), eq(sales.status, "completed"), gte(sales.createdAt, new Date(now.getTime() - 6 * 86400000)))).groupBy(sql`DATE_FORMAT(${sales.createdAt}, '%Y-%m-%d')`).orderBy(sql`DATE_FORMAT(${sales.createdAt}, '%Y-%m-%d')`),
+    db.select({ date: salesDayExpression, total: sql<number>`COALESCE(SUM(${sales.totalCents}), 0)` }).from(sales).where(and(eq(sales.companyId, 1), eq(sales.status, "completed"), gte(sales.createdAt, new Date(now.getTime() - 6 * 86400000)))).groupBy(salesDayExpression).orderBy(salesDayExpression),
   ]);
   return {
     todaySalesCents: Number(today[0]?.total ?? 0),
@@ -147,11 +148,11 @@ export async function getDailySales(from: Date, to: Date) {
   const db = await getDb();
   if (!db) return [];
   return db
-    .select({ date: sql<string>`DATE_FORMAT(${sales.createdAt}, '%Y-%m-%d')`, totalCents: sql<number>`COALESCE(SUM(${sales.totalCents}), 0)`, count: sql<number>`COUNT(*)` })
+    .select({ date: salesDayExpression, totalCents: sql<number>`COALESCE(SUM(${sales.totalCents}), 0)`, count: sql<number>`COUNT(*)` })
     .from(sales)
     .where(and(eq(sales.companyId, 1), eq(sales.status, "completed"), gte(sales.createdAt, from), lte(sales.createdAt, to)))
-    .groupBy(sql`DATE_FORMAT(${sales.createdAt}, '%Y-%m-%d')`)
-    .orderBy(sql`DATE_FORMAT(${sales.createdAt}, '%Y-%m-%d')`);
+    .groupBy(salesDayExpression)
+    .orderBy(salesDayExpression);
 }
 
 export { cashMovements, cashRegisters, customerPayments, customers, financialTransactions, products, saleItems, sales, stockMovements, users };
