@@ -1,5 +1,4 @@
 import { useAuth } from "@/_core/hooks/useAuth";
-import { startLogin } from "@/const";
 import { trpc } from "@/lib/trpc";
 import type { Customer, Product } from "@shared/types";
 import {
@@ -58,11 +57,21 @@ const navItems: { id: View; label: string; icon: typeof LayoutDashboard; shortcu
 
 export default function Home() {
   const { user, loading, logout } = useAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [view, setView] = useState<View>("dashboard");
   const [mobileNav, setMobileNav] = useState(false);
 
   if (loading) return <LoadingScreen />;
-  if (!user) return <LoginScreen />;
+  if (!user && !isAuthenticated) return <LoginScreen onLogin={() => setIsAuthenticated(true)} />;
+
+  const displayUser = user ?? { name: "Operador", role: "user" as const };
+  const handleLogout = () => {
+    if (user) {
+      void logout();
+    } else {
+      setIsAuthenticated(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f7f8f4] text-[#17211c]">
@@ -85,16 +94,16 @@ export default function Home() {
           <button onClick={() => setView("pdv")} className="mt-3 flex items-center gap-1 text-xs font-bold text-[#dff277]">Abrir PDV <ChevronRight className="h-3 w-3" /></button>
         </div>
         <div className="mt-4 flex items-center gap-3 border-t border-[#e5ebe4] px-2 pt-4">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#d9e7d8] text-sm font-bold text-[#31543e]">{(user.name || "U").slice(0, 1).toUpperCase()}</div>
-          <div className="min-w-0 flex-1"><p className="truncate text-sm font-bold">{user.name || "Operador"}</p><p className="truncate text-xs text-[#87958c]">{user.role === "admin" ? "Administrador" : "Operador"}</p></div>
-          <button onClick={logout} title="Sair" className="text-[#87958c] transition hover:text-[#b43f36]"><LogOut className="h-4 w-4" /></button>
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#d9e7d8] text-sm font-bold text-[#31543e]">{(displayUser.name || "U").slice(0, 1).toUpperCase()}</div>
+          <div className="min-w-0 flex-1"><p className="truncate text-sm font-bold">{displayUser.name || "Operador"}</p><p className="truncate text-xs text-[#87958c]">{displayUser.role === "admin" ? "Administrador" : "Operador"}</p></div>
+          <button onClick={handleLogout} title="Sair" className="text-[#87958c] transition hover:text-[#b43f36]"><LogOut className="h-4 w-4" /></button>
         </div>
       </aside>
       {mobileNav && <button aria-label="Fechar menu" className="fixed inset-0 z-30 bg-[#102218]/30 lg:hidden" onClick={() => setMobileNav(false)} />}
       <main className="min-h-screen lg:ml-[258px]">
         <header className="sticky top-0 z-20 flex h-[76px] items-center justify-between border-b border-[#e3e9e1]/80 bg-[#f7f8f4]/90 px-5 backdrop-blur-xl sm:px-8">
           <div className="flex items-center gap-3"><button onClick={() => setMobileNav(true)} className="rounded-lg p-2 text-[#66756b] hover:bg-white lg:hidden"><Menu className="h-5 w-5" /></button><div><p className="text-xs font-medium capitalize text-[#849188]">{dateLabel(new Date())}</p><h1 className="font-display text-xl font-bold tracking-tight sm:text-2xl">{navItems.find((item) => item.id === view)?.label}</h1></div></div>
-          <div className="hidden items-center gap-3 sm:flex"><div className="flex items-center gap-2 rounded-full border border-[#dce4db] bg-white px-3 py-2 text-xs font-semibold text-[#69776e]"><span className="h-2 w-2 rounded-full bg-[#73b52d] shadow-[0_0_0_3px_#e6f4d3]" /> Caixa conectado</div><div className="h-9 w-9 rounded-full bg-[#d9e7d8] p-2 text-center text-sm font-bold text-[#31543e]">{(user.name || "U").slice(0, 1).toUpperCase()}</div></div>
+          <div className="hidden items-center gap-3 sm:flex"><div className="flex items-center gap-2 rounded-full border border-[#dce4db] bg-white px-3 py-2 text-xs font-semibold text-[#69776e]"><span className="h-2 w-2 rounded-full bg-[#73b52d] shadow-[0_0_0_3px_#e6f4d3]" /> Caixa conectado</div><div className="h-9 w-9 rounded-full bg-[#d9e7d8] p-2 text-center text-sm font-bold text-[#31543e]">{(displayUser.name || "U").slice(0, 1).toUpperCase()}</div></div>
         </header>
         <div className="mx-auto max-w-[1500px] p-5 sm:p-8">{view === "dashboard" && <Dashboard onNavigate={setView} />} {view === "pdv" && <PointOfSale />} {view === "products" && <Products />} {view === "stock" && <Stock />} {view === "customers" && <Customers />} {view === "cash" && <Cash />} {view === "reports" && <Reports />}</div>
       </main>
@@ -103,7 +112,35 @@ export default function Home() {
 }
 
 function LoadingScreen() { return <div className="flex min-h-screen items-center justify-center bg-[#f7f8f4]"><div className="flex items-center gap-3 text-sm font-semibold text-[#5d7164]"><span className="h-5 w-5 animate-spin rounded-full border-2 border-[#cfe0ca] border-t-[#377125]" /> Abrindo o sistema…</div></div>; }
-function LoginScreen() { return <div className="flex min-h-screen items-center justify-center bg-[#183e2a] p-6"><div className="w-full max-w-md rounded-3xl bg-[#fbfcf9] p-8 shadow-2xl sm:p-10"><div className="mb-8 flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#183e2a] text-[#ddf57f]"><Store className="h-5 w-5" /></div><div><p className="font-display text-xl font-bold">Mercantil</p><p className="text-xs text-[#829087]">Caixa & gestão</p></div></div><h1 className="font-display text-3xl font-bold tracking-tight text-[#183e2a]">Bom dia.</h1><p className="mt-2 text-sm leading-relaxed text-[#6d7d72]">Entre para acessar o caixa, os produtos e o controle do seu mercantil.</p><Button onClick={() => startLogin()} className="mt-8 h-12 w-full rounded-xl bg-[#183e2a] font-bold text-[#e0f57f] hover:bg-[#285a3c]">Entrar no sistema <ChevronRight className="ml-2 h-4 w-4" /></Button></div></div>; }
+function LoginScreen({ onLogin }: { onLogin: () => void }) {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-[#183e2a] p-6">
+      <div className="w-full max-w-md rounded-3xl bg-[#fbfcf9] p-8 shadow-2xl sm:p-10">
+        <div className="mb-8 flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#183e2a] text-[#ddf57f]">
+            <Store className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="font-display text-xl font-bold">Mercantil</p>
+            <p className="text-xs text-[#829087]">Caixa & gestão</p>
+          </div>
+        </div>
+        <h1 className="font-display text-3xl font-bold tracking-tight text-[#183e2a]">
+          Bom dia.
+        </h1>
+        <p className="mt-2 text-sm leading-relaxed text-[#6d7d72]">
+          Entre para acessar o caixa, os produtos e o controle do seu mercantil.
+        </p>
+        <Button 
+          onClick={onLogin}
+          className="mt-8 h-12 w-full rounded-xl bg-[#183e2a] font-bold text-[#e0f57f] hover:bg-[#285a3c]"
+        >
+          Entrar no sistema <ChevronRight className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 function Dashboard({ onNavigate }: { onNavigate: (view: View) => void }) {
   const { data, isLoading } = trpc.dashboard.useQuery();

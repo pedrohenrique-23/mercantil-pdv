@@ -81,6 +81,75 @@ export type Database = {
         };
         Relationships: [];
       };
+      categories: {
+        Row: {
+          id: string;
+          company_id: string;
+          name: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          company_id: string;
+          name: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          company_id?: string;
+          name?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      products: {
+        Row: {
+          id: string;
+          company_id: string;
+          category_id: string | null;
+          name: string;
+          barcode: string | null;
+          price_in_cents: number;
+          cost_in_cents: number | null;
+          stock_quantity: number;
+          min_stock_quantity: number | null;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          company_id: string;
+          category_id?: string | null;
+          name: string;
+          barcode?: string | null;
+          price_in_cents: number;
+          cost_in_cents?: number | null;
+          stock_quantity?: number;
+          min_stock_quantity?: number | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          company_id?: string;
+          category_id?: string | null;
+          name?: string;
+          barcode?: string | null;
+          price_in_cents?: number;
+          cost_in_cents?: number | null;
+          stock_quantity?: number;
+          min_stock_quantity?: number | null;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
