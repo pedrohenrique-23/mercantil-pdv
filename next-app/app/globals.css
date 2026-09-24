@@ -1648,3 +1648,254 @@ kbd {
     width: 100%;
   }
 }
+
+/* Cash register */
+.cash-view {
+  position: relative;
+}
+.cash-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 9px 13px;
+  background: #fff;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.cash-status i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #a6afb0;
+}
+.cash-status.open i {
+  background: #73ae32;
+  box-shadow: 0 0 0 4px rgba(115, 174, 50, 0.14);
+}
+.cash-status.closed i {
+  background: #b78743;
+}
+.cash-open-card {
+  display: grid;
+  justify-items: center;
+  max-width: 570px;
+  margin: 8px auto 0;
+  padding: 35px 40px;
+  text-align: center;
+}
+.cash-big-icon {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 18px;
+  background: var(--lime-soft);
+  color: var(--brand);
+}
+.cash-open-card h3 {
+  margin: 18px 0 4px;
+  color: var(--ink);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 22px;
+}
+.cash-open-card > p {
+  max-width: 390px;
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.cash-form {
+  display: grid;
+  gap: 13px;
+  width: 100%;
+  text-align: left;
+}
+.cash-form.compact {
+  max-width: 360px;
+}
+.cash-form label {
+  display: grid;
+  gap: 6px;
+  color: #4c5c52;
+  font-size: 11px;
+  font-weight: 700;
+}
+.cash-form input,
+.cash-form select,
+.cash-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 10px 11px;
+  outline: none;
+  background: #fff;
+  color: var(--ink);
+  resize: vertical;
+}
+.cash-form input:focus,
+.cash-form select:focus,
+.cash-form textarea:focus {
+  border-color: #8fb753;
+  box-shadow: 0 0 0 3px rgba(223, 242, 119, 0.42);
+}
+.cash-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+.cash-stat {
+  display: grid;
+  gap: 8px;
+  padding: 17px 19px;
+}
+.cash-stat span {
+  color: var(--muted);
+  font-size: 11px;
+}
+.cash-stat strong {
+  color: var(--brand);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 22px;
+}
+.cash-positive {
+  color: #4f8a2e !important;
+}
+.cash-negative {
+  color: #ad5e52 !important;
+}
+.cash-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+.cash-action-card {
+  position: relative;
+  padding: 21px;
+}
+.cash-action-card h3 {
+  margin: 16px 0 6px;
+  color: var(--ink);
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 16px;
+}
+.cash-action-card p {
+  min-height: 36px;
+  margin: 0 0 17px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.cash-action-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+}
+.cash-action-icon.in {
+  background: #e4f3d2;
+  color: #5b8f32;
+}
+.cash-action-icon.close {
+  background: #fae7d4;
+  color: #a16f35;
+}
+.cash-inline-form {
+  padding: 21px;
+}
+.cash-inline-form .cash-form {
+  grid-template-columns: repeat(3, 1fr);
+  align-items: end;
+  margin-top: 17px;
+}
+.cash-inline-form .cash-form-buttons {
+  display: flex;
+  gap: 8px;
+}
+.cash-inline-form .cash-form-buttons button {
+  flex: 1;
+}
+.cash-inline-form.close-form {
+  border-color: #e5d6c2;
+  background: #fffdf9;
+}
+.cash-history {
+  overflow: hidden;
+}
+.cash-history-list {
+  display: grid;
+  margin-top: 14px;
+}
+.cash-movement-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 3px;
+  border-bottom: 1px solid #eef1ec;
+}
+.cash-movement-row:last-child {
+  border-bottom: 0;
+}
+.cash-movement-row > span:nth-child(2) {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+}
+.cash-movement-row strong {
+  color: var(--ink);
+  font-size: 12px;
+}
+.cash-movement-row small {
+  color: var(--muted-2);
+  font-size: 10px;
+}
+.cash-movement-row b {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 13px;
+}
+.cash-movement-icon {
+  display: grid;
+  place-items: center;
+  width: 31px;
+  height: 31px;
+  border-radius: 9px;
+}
+.cash-movement-icon.in {
+  background: #e7f4d7;
+  color: #5c9232;
+}
+.cash-movement-icon.out {
+  background: #f9e4df;
+  color: #ad5e52;
+}
+@media (max-width: 850px) {
+  .cash-inline-form .cash-form {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cash-inline-form .cash-form label:last-of-type {
+    grid-column: 1 / -1;
+  }
+  .cash-inline-form .cash-form-buttons {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 640px) {
+  .cash-stats,
+  .cash-actions {
+    grid-template-columns: 1fr;
+  }
+  .cash-open-card {
+    padding: 25px 18px;
+  }
+  .cash-inline-form .cash-form {
+    grid-template-columns: 1fr;
+  }
+  .cash-inline-form .cash-form label:last-of-type,
+  .cash-inline-form .cash-form-buttons {
+    grid-column: auto;
+  }
+}

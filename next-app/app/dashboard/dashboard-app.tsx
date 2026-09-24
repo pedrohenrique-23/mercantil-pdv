@@ -29,6 +29,8 @@ import CatalogPanel from "./catalog-panel";
 import type { CatalogData } from "@/lib/catalog/types";
 import StockPanel from "./stock-panel";
 import type { StockData } from "@/lib/stock/types";
+import CashPanel from "./cash-panel";
+import type { CashData } from "@/lib/cash/types";
 
 type View =
   | "dashboard"
@@ -54,6 +56,7 @@ type DashboardAppProps = {
   user: DashboardUser;
   catalog: CatalogData;
   stock: StockData;
+  cash: CashData;
 };
 type NavItem = { id: View; label: string; icon: LucideIcon; shortcut?: string };
 
@@ -101,6 +104,7 @@ export default function DashboardApp({
   user,
   catalog,
   stock,
+  cash,
 }: DashboardAppProps) {
   const [view, setView] = useState<View>("dashboard");
   const [mobileNav, setMobileNav] = useState(false);
@@ -211,10 +215,12 @@ export default function DashboardApp({
             />
           )}
           {view === "stock" && <StockPanel {...stock} />}
+          {view === "cash" && <CashPanel {...cash} />}
           {view !== "dashboard" &&
             view !== "pdv" &&
             view !== "products" &&
-            view !== "stock" && (
+            view !== "stock" &&
+            view !== "cash" && (
               <ModulePlaceholder view={view} onNavigate={navigate} />
             )}
         </div>

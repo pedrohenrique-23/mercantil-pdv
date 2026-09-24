@@ -365,6 +365,27 @@ export type Database = {
         };
         Returns: Tables<"stock_movements">;
       };
+      open_cash_register: {
+        Args: { opening_amount_cents: number; opening_notes?: string | null };
+        Returns: Tables<"cash_registers">;
+      };
+      record_cash_movement: {
+        Args: {
+          target_register_id: string;
+          movement_kind: Database["public"]["Enums"]["cash_movement_type"];
+          amount_cents: number;
+          movement_description?: string | null;
+        };
+        Returns: Tables<"cash_movements">;
+      };
+      close_cash_register: {
+        Args: {
+          target_register_id: string;
+          counted_amount_cents: number;
+          closing_notes?: string | null;
+        };
+        Returns: Tables<"cash_registers">;
+      };
     };
     Enums: {
       profile_role: "admin" | "operator";

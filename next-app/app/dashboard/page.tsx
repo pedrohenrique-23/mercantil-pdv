@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getCatalogData } from "@/lib/catalog/queries";
 import { getStockData } from "@/lib/stock/queries";
+import { getCashData } from "@/lib/cash/queries";
 import { redirect } from "next/navigation";
 import DashboardApp from "./dashboard-app";
 
@@ -16,12 +17,14 @@ export default async function DashboardPage() {
 
   const catalog = await getCatalogData();
   const stock = await getStockData();
+  const cash = await getCashData();
 
   return (
     <DashboardApp
       user={{ email: user.email, user_metadata: user.user_metadata }}
       catalog={catalog}
       stock={stock}
+      cash={cash}
     />
   );
 }
