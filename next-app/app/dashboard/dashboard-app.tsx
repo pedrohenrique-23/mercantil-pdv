@@ -25,6 +25,8 @@ import {
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import CatalogPanel from "./catalog-panel";
+import type { CatalogData } from "@/lib/catalog/types";
 
 type View =
   | "dashboard"
@@ -46,7 +48,7 @@ type DashboardUser = {
   email?: string;
   user_metadata?: Record<string, unknown>;
 };
-type DashboardAppProps = { user: DashboardUser };
+type DashboardAppProps = { user: DashboardUser; catalog: CatalogData };
 type NavItem = { id: View; label: string; icon: LucideIcon; shortcut?: string };
 
 type Stat = {
@@ -89,7 +91,7 @@ function getFirstName(user: DashboardUser) {
   ).split(" ")[0];
 }
 
-export default function DashboardApp({ user }: DashboardAppProps) {
+export default function DashboardApp({ user, catalog }: DashboardAppProps) {
   const [view, setView] = useState<View>("dashboard");
   const [mobileNav, setMobileNav] = useState(false);
   const router = useRouter();
@@ -191,7 +193,14 @@ export default function DashboardApp({ user }: DashboardAppProps) {
         <div className="page-content">
           {view === "dashboard" && <Dashboard onNavigate={navigate} />}
           {view === "pdv" && <PointOfSale />}
-          {view !== "dashboard" && view !== "pdv" && (
+          {view === "products" && (
+            <CatalogPanel
+              initialCategories={catalog.categories}
+              initialProducts={catalog.products}
+              initialError={catalog.error}
+            />
+          )}
+          {view !== "dashboard" && view !== "pdv" && view !== "products" && (
             <ModulePlaceholder view={view} onNavigate={navigate} />
           )}
         </div>
