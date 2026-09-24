@@ -66,3 +66,9 @@ O arquivo `next-app/types/database.ts` já foi atualizado manualmente para acomp
 ## Pendências de segurança para a etapa seguinte
 
 As políticas protegem o acesso às linhas, mas a operação de venda ainda precisa de uma transação server-side que valide simultaneamente empresa, caixa aberto, estoque, total dos itens, pagamentos e cliente de fiado. Também será necessário adicionar validações de consistência entre `company_id` de produtos, clientes, caixa e vendas em uma RPC ou trigger antes de liberar o PDV para uso financeiro real.
+
+## Movimentação de estoque
+
+A migration `0003_stock_adjustments.sql` adiciona a função `adjust_product_stock`. Ela exige usuário autenticado e papel `owner` ou `admin`, trava o produto com `FOR UPDATE`, valida o tipo e a quantidade, impede saldo negativo, atualiza `products.stock_quantity` e insere o lançamento em `stock_movements` na mesma transação. A Server Action `next-app/lib/stock/actions.ts` chama essa função e traduz erros de permissão e saldo insuficiente para mensagens da interface.
+
+Movimentos manuais disponíveis: entrada de compra, ajuste positivo, ajuste negativo, devolução e perda/avaria. A tela de estoque exibe o saldo por produto, destaca itens abaixo do mínimo, permite busca, registra motivo e mostra os últimos 80 movimentos do ledger. A aplicação remota precisa aplicar `0003_stock_adjustments.sql` depois das migrations anteriores antes que a gravação de ajustes funcione.

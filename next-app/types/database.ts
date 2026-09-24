@@ -355,7 +355,17 @@ export type Database = {
       >;
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      adjust_product_stock: {
+        Args: {
+          target_product_id: string;
+          movement_kind: Database["public"]["Enums"]["stock_movement_type"];
+          quantity_delta: number;
+          movement_reason?: string | null;
+        };
+        Returns: Tables<"stock_movements">;
+      };
+    };
     Enums: {
       profile_role: "admin" | "operator";
       company_member_role: "owner" | "admin" | "operator";
