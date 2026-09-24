@@ -80,7 +80,7 @@ export function useAuth(options?: UseAuthOptions) {
     if (redirectPath) {
       window.location.href = redirectPath;
     } else {
-      startLogin();
+      // startLogin();
     }
   }, [
     redirectOnUnauthenticated,

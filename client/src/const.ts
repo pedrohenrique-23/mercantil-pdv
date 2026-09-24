@@ -27,5 +27,5 @@ export const startLogin = () => {
   url.searchParams.set("state", state);
   url.searchParams.set("type", "signIn");
 
-  window.location.href = url.toString();
+  // window.location.href = url.toString();
 };
